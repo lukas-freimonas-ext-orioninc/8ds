@@ -1,0 +1,166 @@
+openapi: 3.0.0
+info:
+  title: Inventory Management API
+  version: 1.0.0
+  description: API for managing inventory items and user authentication
+servers:
+  - url: http://0.0.0.0:5000/api
+    description: Development server
+paths:
+  /items:
+    post:
+      summary: Create a new item
+      tags:
+        - Items
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                quantity:
+                  type: number
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Item created successfully
+        '500':
+          description: Error creating item
+    get:
+      summary: Get all items for the authenticated user
+      tags:
+        - Items
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of items
+        '500':
+          description: Error fetching items
+  /items/{id}:
+    get:
+      summary: Get a specific item
+      tags:
+        - Items
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item details
+        '404':
+          description: Item not found
+        '500':
+          description: Error fetching item
+    put:
+      summary: Update an item
+      tags:
+        - Items
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                quantity:
+                  type: number
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Updated item details
+        '404':
+          description: Item not found
+        '500':
+          description: Error updating item
+    delete:
+      summary: Delete an item
+      tags:
+        - Items
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item deleted successfully
+        '404':
+          description: Item not found
+        '500':
+          description: Error deleting item
+  /users/register:
+    post:
+      summary: Register a new user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: User created successfully
+        '500':
+          description: Error creating user
+  /users/login:
+    post:
+      summary: Login
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful, returns JWT token
+        '400':
+          description: Invalid credentials
+        '500':
+          description: Error during login
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
