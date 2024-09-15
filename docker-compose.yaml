@@ -1,0 +1,30 @@
+version: '3'
+services:
+  mongo-container:
+    image: mongo
+    ports:
+      - '27017:27017'
+    networks:
+      - drawer-inventory-app
+    volumes:
+      - mongo-data:/data/db
+
+  api-server-container:
+    image: drawer-inventory-api
+    restart: always
+    ports:
+      - '5000:5000'
+    depends_on:
+      - mongo-container
+    env_file:
+      - .env
+    networks:
+      - drawer-inventory-app
+
+volumes:
+  mongo-data:
+    driver: local
+
+networks:
+  drawer-inventory-app:
+    driver: bridge
